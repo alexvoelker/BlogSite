@@ -121,6 +121,16 @@ function updatePost(postID, username, title, content, footnotes) {
   // The postID was invalid
   if (postID > currentMaxID || postID < 0) return false;
 
+  // Can have empty fields, not not null fields
+  if (
+    postID == null ||
+    username == null ||
+    title == null ||
+    content == null ||
+    footnotes == null
+  )
+    return false;
+
   // Try to update the post if it exists in the array of posts
   for (let postIndex = 0; postIndex < posts.length; postIndex++) {
     const element = posts[postIndex];
@@ -164,7 +174,8 @@ app.get("/", (req, res) => {
 // Render the post creation page
 app.get("/post/create", (req, res) => {
   res.locals.websiteTitle = state.websiteTitle;
-  res.render("post_create.ejs");
+  res.locals.formType = "create";
+  res.render("post_form.ejs");
 });
 
 app.post("/post/create", (req, res) => {
@@ -179,9 +190,10 @@ app.post("/post/create", (req, res) => {
 
 app.get("/post/update/:postID", (req, res) => {
   res.locals.websiteTitle = state.websiteTitle;
+  res.locals.formType = "update";
   res.locals.post = getPost(req.params["postID"]);
   if (res.locals.post == null) res.redirect("/");
-  else res.render("post_update.ejs");
+  else res.render("post_form.ejs");
 });
 
 // Update a post
