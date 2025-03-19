@@ -1,0 +1,23 @@
+<%- include("partials/header.ejs") %>
+
+    <form action="/post/create" method="post">
+        <label>
+            Name:
+            <input name="username" type="text" class="form-input" placeholder="username" />
+        </label>
+        <label>
+            Title:
+            <input name="title" type="text" class="form-input" placeholder="title" />
+        </label>
+        <label>
+            Blog Post:
+            <textarea name="content" type="text" class="form-entry-area" placeholder="Post body..."></textarea>
+        </label>
+        <label>
+            Footnotes:
+            <textarea name="footnotes" type="text" class="form-entry-area" placeholder="Additional notes"></textarea>
+        </label>
+        <button>POST!</button>
+    </form>
+
+<%- include("partials/footer.ejs") %>

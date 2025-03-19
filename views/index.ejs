@@ -1,0 +1,21 @@
+<%- include("partials/header.ejs") %>
+    <h1>Welcome to the Blog!</h1>
+    <h2>Make a new Post?</h2>
+    <button>
+        <a href="/post/create">
+            CREATE POST
+        </a>
+    </button>
+
+    <h2>List of posts:</h2>
+    <% if (locals.posts) { %>
+        <ul>
+            <% locals.posts.forEach(post=> { %>
+                <li>
+                    <a href="/post/<%- post.postID %>"><%- post.title %></a>
+                </li>
+                <% }); %>
+        </ul>
+        <% } %>
+
+            <%- include("partials/footer.ejs") %>
