@@ -96,8 +96,6 @@ currentMaxID = 7; // set to 7 to account for test data
 function createNewPost(username, title, content, footnotes) {
   const newPostID = ++currentMaxID;
   const newPost = new Post(newPostID, username, title, content, footnotes);
-  console.log(newPost);
-
   posts.push(newPost);
   return newPostID;
 }
@@ -112,7 +110,6 @@ function getPost(postID) {
     if (element == null) continue;
 
     if (element.postID == postID) {
-      // TODO check if JS is pass by pointer
       // update the post
       return element;
     }
@@ -149,9 +146,8 @@ function deletePost(postID) {
     if (element == null) continue;
 
     if (element.postID == postID) {
-      // TODO check if JS is pass by pointer
       // delete the post
-      posts[postIndex] = null;
+      posts.splice(postIndex, 1);
       return true;
     }
   }
