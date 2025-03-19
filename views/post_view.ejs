@@ -1,12 +1,31 @@
 <%- include("partials/header.ejs") %>
 
-<!-- Display the content of a post here -->
- <h1><%= locals.post.title %></h1>
- <p>By: <%= locals.post.username %></p>
- <p><%= locals.post.postDate %></p>
- <br>
- <p><%= locals.post.content %></p>
- <hr>
- <aside><%= locals.post.footnotes %></aside>
+    <!-- Display the content of a post here -->
+    <h1>
+        <%= locals.post.title %>
+    </h1>
+    <p>By: <%= locals.post.username %>
+    </p>
+    <p>
+        Posted: <%= locals.post.postDate %>
+    </p>
+    <% if (locals.post.updateTime !=null) {%>
+        <p>Updated: <%= locals.post.updateTime %>
+        </p>
+        <% } %>
+            <br>
+            <p>
+                <%= locals.post.content %>
+            </p>
+            <hr>
+            <aside>
+                <%= locals.post.footnotes %>
+            </aside>
+            <form action="/post/update/<%= post.postID %>" method="GET">
+                <button type="submit">UPDATE POST</button>
+            </form>
+            <form action="/post/delete/<%= post.postID %>" method="POST">
+                <button type="submit">DELETE POST</button>
+            </form>
 
-<%- include("partials/footer.ejs") %>
+            <%- include("partials/footer.ejs") %>

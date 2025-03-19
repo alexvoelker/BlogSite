@@ -21,10 +21,19 @@ class Post {
   constructor(postID, username, title, content, footnotes) {
     this.postID = postID;
     this.postDate = new Date().toDateString();
+    this.updateTime = null;
     this.username = username;
     this.title = title;
     this.content = content;
     this.footnotes = footnotes;
+  }
+
+  updatePost(username, title, content, footnotes) {
+    this.username = username;
+    this.title = title;
+    this.content = content;
+    this.footnotes = footnotes;
+    this.updateTime = new Date().toDateString();
   }
 }
 
@@ -84,14 +93,69 @@ let posts = [
 ];
 currentMaxID = 7; // set to 7 to account for test data
 
-
-function sendPost(username, title, content, footnotes) {
+function createNewPost(username, title, content, footnotes) {
   const newPostID = ++currentMaxID;
   const newPost = new Post(newPostID, username, title, content, footnotes);
   console.log(newPost);
 
   posts.push(newPost);
   return newPostID;
+}
+
+function getPost(postID) {
+  // The postID was invalid
+  if (postID > currentMaxID || postID < 0) return null;
+
+  // Try to update the post if it exists in the array of posts
+  for (let postIndex = 0; postIndex < posts.length; postIndex++) {
+    const element = posts[postIndex];
+    if (element == null) continue;
+
+    if (element.postID == postID) {
+      // TODO check if JS is pass by pointer
+      // update the post
+      return element;
+    }
+  }
+  return null;
+}
+
+function updatePost(postID, username, title, content, footnotes) {
+  // The postID was invalid
+  if (postID > currentMaxID || postID < 0) return false;
+
+  // Try to update the post if it exists in the array of posts
+  for (let postIndex = 0; postIndex < posts.length; postIndex++) {
+    const element = posts[postIndex];
+    if (element == null) continue;
+
+    if (element.postID == postID) {
+      // TODO check if JS is pass by pointer
+      // update the post
+      element.updatePost(username, title, content, footnotes);
+      return true;
+    }
+  }
+  return false;
+}
+
+function deletePost(postID) {
+  // The postID was invalid
+  if (postID > currentMaxID || postID < 0) return false;
+
+  // Try to update the post if it exists in the array of posts
+  for (let postIndex = 0; postIndex < posts.length; postIndex++) {
+    const element = posts[postIndex];
+    if (element == null) continue;
+
+    if (element.postID == postID) {
+      // TODO check if JS is pass by pointer
+      // delete the post
+      posts[postIndex] = null;
+      return true;
+    }
+  }
+  return false;
 }
 
 // Render the Home page
@@ -108,7 +172,7 @@ app.get("/post/create", (req, res) => {
 });
 
 app.post("/post/create", (req, res) => {
-  let postID = sendPost(
+  let postID = createNewPost(
     req.body.username,
     req.body.title,
     req.body.content,
@@ -117,10 +181,57 @@ app.post("/post/create", (req, res) => {
   res.redirect(`/post/${postID}`);
 });
 
+app.get("/post/update/:postID", (req, res) => {
+  res.locals.websiteTitle = state.websiteTitle;
+  res.locals.post = getPost(req.params["postID"]);
+  if (res.locals.post == null) res.redirect("/");
+  else res.render("post_update.ejs");
+});
+
+// Update a post
+app.post("/post/update/:postID", (req, res) => {
+  let success = updatePost(
+    Number(req.params["postID"]),
+    req.body.username,
+    req.body.title,
+    req.body.content,
+    req.body.footnotes
+  );
+
+  console.log(
+    success
+      ? `Updated Post: ${req.params["postID"]}`
+      : `Failed to upate post: ${req.params["postID"]}`
+  );
+
+  res.redirect("/");
+});
+
+function requestDeletePost(postID) {
+  const success = deletePost(postID);
+  const message = success
+    ? `Deleted Post: ${postID}`
+    : `Failed to delete post: ${postID}`;
+  return message;
+}
+// Delete a post
+// Can't use "DELETE" in HTML forms,
+// so keep functionality in POST requests
+app.post("/post/delete/:postID", (req, res) => {
+  const message = requestDeletePost(req.params["postID"]);
+  console.log(message);
+  res.redirect("/");
+});
+
+app.delete("/post/delete/:postID", (req, res) => {
+  const message = requestDeletePost(req.params["postID"]);
+  res.send(message);
+});
+
 // Render a given post's page
 app.get("/post/:postID", (req, res) => {
   res.locals.websiteTitle = state.websiteTitle;
-  res.locals.post = posts[req.params["postID"] - 1]; // arrays are 0-indexed
-  console.log(res.locals.post);
-  res.render("post_view.ejs");
+  res.locals.post = getPost(req.params["postID"]);
+  if (res.locals.post == null) res.redirect("/");
+  else res.render("post_view.ejs");
 });

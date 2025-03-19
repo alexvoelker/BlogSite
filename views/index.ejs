@@ -1,21 +1,32 @@
 <%- include("partials/header.ejs") %>
     <h1>Welcome to the Blog!</h1>
     <h2>Make a new Post?</h2>
-    <button>
-        <a href="/post/create">
+    <a href="/post/create">
+        <button>
             CREATE POST
-        </a>
-    </button>
+        </button>
+    </a>
 
     <h2>List of posts:</h2>
     <% if (locals.posts) { %>
+        <hr>
         <ul>
             <% locals.posts.forEach(post=> { %>
-                <li>
-                    <a href="/post/<%- post.postID %>"><%- post.title %></a>
-                </li>
-                <% }); %>
+                <% if (post !=null) { %>
+                    <li>
+                        <a href="/post/<%= post.postID %>"><%- post.title %></a>
+                        <form action="/post/update/<%= post.postID %>" method="GET">
+                            <button type="submit">UPDATE POST</button>
+                        </form>
+                        <form action="/post/delete/<%= post.postID %>" method="POST">
+                            <button type="submit">DELETE POST</button>
+                        </form>
+                    </li>
+                    <% } %>
+                        <br>
+                        <% }); %>
         </ul>
+        <hr>
         <% } %>
 
             <%- include("partials/footer.ejs") %>
