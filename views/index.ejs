@@ -10,7 +10,6 @@
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                     <% locals.posts.forEach(post=> { %>
                         <% if (post !=null) { %>
-                            <% console.log(post); %>
                             <div class="col">
                                 <a href="/post/<%= post.postID %>">
                                     <div class="card shadow-sm">
